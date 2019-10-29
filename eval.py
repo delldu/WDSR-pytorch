@@ -10,6 +10,7 @@ from core.data.div2k import DIV2K
 from core.data.utils import quantize
 from core.utils import AverageMeter, calc_psnr, load_checkpoint, load_weights
 
+import pdb
 
 def forward(x):
     with torch.no_grad():
@@ -35,7 +36,7 @@ def forward_x8(x):
         return torch.stack(sr).mean(0).permute(2, 0, 1)
 
 
-def test(dataset, loader, model, args, device, tag=''):
+def test(dataset, loader, model, device, args, tag=''):
     psnr = AverageMeter()
 
     # Set the model to evaluation mode
@@ -46,6 +47,8 @@ def test(dataset, loader, model, args, device, tag=''):
 
         for data in loader:
             lr, hr = data
+            # pdb.set_trace()
+
             lr = lr.to(device)
             hr = hr.to(device)
 
