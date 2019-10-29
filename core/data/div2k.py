@@ -2,7 +2,7 @@ import glob
 import h5py
 from tqdm import tqdm
 from .utils import load_img, img2np, get_patch, np2tensor, normalize
-
+import pdb
 
 class DIV2K(object):
     def __init__(self, args, train, n_pairs=None):
@@ -38,8 +38,15 @@ class DIV2K(object):
                 t.set_description('hr')
                 for i, path in enumerate(hr_list):
                     hr_group.create_dataset(str(i), data=img2np(load_img(path)))
+                    # (Pdb) path
+                    # '/home/dell/ZDisk/WorkSpace/4K/dataset/DIV2K/DIV2K_train_HR/0001.png'
+                    # (Pdb) x=img2np(load_img(path))
+                    # (Pdb) type(x)
+                    # <class 'numpy.ndarray'>
+                    # (Pdb) x.shape
+                    # (1404, 2040, 3)
+                    # (Pdb)
                     t.update()
-
             with tqdm(total=len(lr_list)) as t:
                 t.set_description('lr')
                 for i, path in enumerate(lr_list):

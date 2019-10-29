@@ -29,7 +29,7 @@ parser.add_argument('--rgb-range', type=tuple, default=(0.0, 255.0))
 parser.add_argument('--patch-size', type=int, default=96)  # HR Patch Size
 parser.add_argument('--augment_patch', type=bool, default=True)
 
-parser.add_argument('--batch-size', type=int, default=16)
+parser.add_argument('--batch-size', type=int, default=96)
 parser.add_argument('--epochs', type=int, default=300)
 parser.add_argument('--iterations-per-epoch', type=int, default=1000)
 

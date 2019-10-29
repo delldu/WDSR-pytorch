@@ -1,6 +1,6 @@
 import torch
 import shutil
-
+import pdb
 
 class AverageMeter(object):
     def __init__(self):
@@ -20,10 +20,18 @@ class AverageMeter(object):
 
 
 def calc_psnr(a, b, scale=None, max_value=255.0):
+    # pdb.set_trace()
+    # (Pdb) pp a.size(), b.size()
+    # (torch.Size([1, 3, 1356, 2040]), torch.Size([1, 3, 1356, 2040]))
     if scale:
         shave = scale + 6
         a = a[..., shave:-shave, shave:-shave]
         b = b[..., shave:-shave, shave:-shave]
+    # (Pdb) pp a.size()
+    # torch.Size([1, 3, 1340, 2024])
+    # (Pdb) pp b.size()
+    # torch.Size([1, 3, 1340, 2024])
+
     return 10. * ((max_value ** 2) / ((a - b) ** 2).mean()).log10()
 
 

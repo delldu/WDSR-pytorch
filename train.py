@@ -16,6 +16,7 @@ from core.data.div2k import DIV2K
 from core.data.utils import quantize
 from core.utils import AverageMeter, adjust_lr, calc_psnr, save_checkpoint
 
+import pdb
 
 def print_information(model, args):
     print('=' * 30)
@@ -49,6 +50,11 @@ def train(dataset, loader, model, criterion, optimizer, tag=''):
             # Predict results and calculate loss
             sr = model(lr)
             loss = criterion(sr, hr)
+            # pdb.set_trace()
+            # (Pdb) lr.size()
+            # torch.Size([96, 3, 24, 24])
+            # (Pdb) hr.size()
+            # torch.Size([96, 3, 96, 96])
 
             # Update loss
             losses.update(loss.item(), lr.shape[0])

@@ -13,6 +13,14 @@ class ResBlock(nn.Module):
             weight_norm(nn.Conv2d(n_feats * expansion_ratio, int(n_feats * low_rank_ratio), kernel_size=1)),
             weight_norm(nn.Conv2d(int(n_feats * low_rank_ratio), n_feats, kernel_size=3, padding=1))
         )
+        # (10): ResBlock(
+        #   (module): Sequential(
+        #     (0): Conv2d(32, 192, kernel_size=(1, 1), stride=(1, 1))
+        #     (1): ReLU(inplace=True)
+        #     (2): Conv2d(192, 25, kernel_size=(1, 1), stride=(1, 1))
+        #     (3): Conv2d(25, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        #   )
+        # )
 
     def forward(self, x):
         return x + self.module(x) * self.res_scale

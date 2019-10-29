@@ -57,6 +57,12 @@ def test(dataset, loader, model, device, args, tag=''):
             else:
                 sr = forward(lr)
 
+            # pdb.set_trace()
+            # (Pdb) lr.size()
+            # torch.Size([1, 3, 678, 1020])
+            # (Pdb) sr.size()
+            # torch.Size([1, 3, 1356, 2040])
+
             # Quantize results
             sr = quantize(sr, args.rgb_range)
 

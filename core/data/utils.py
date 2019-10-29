@@ -2,6 +2,7 @@ import random
 import PIL.Image as pil_image
 import numpy as np
 import torch
+import pdb
 
 
 def load_img(path):
@@ -44,6 +45,7 @@ def augment_patches(patches, hflip=True, vflip=True, rot=True):
     return ret
 
 
+# xxxx1111
 def get_patch(lr, hr, patch_size, scale, augment_patch=False):
     lr_h, lr_w = lr.shape[:2]
     lr_p = patch_size // scale

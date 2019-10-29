@@ -1,12 +1,22 @@
 DIV2K_DIR=/home/dell/ZDisk/WorkSpace/4K/dataset/DIV2K
-CHECKPOINT_FILE=output/WDSR-B-f32-b16-r6-x2-best.pth.tar
 
-python eval.py --dataset-dir ${DIV2K_DIR} \
-                --checkpoint-file ${CHECKPOINT_FILE} \
-                --model "WDSR-B" \
-                --scale 2 \
-                --n-feats 32 \
-                --n-res-blocks 16 \
-                --expansion-ratio 6 \
-                --low-rank-ratio 0.8 \
-                --res-scale 1.0 \
+
+test_a()
+{
+	CHECKPOINT_FILE=output/WDSR-A-f32-b16-r4-x2-best.pth.tar
+	python eval.py --dataset-dir ${DIV2K_DIR} \
+	                --checkpoint-file ${CHECKPOINT_FILE} \
+	                --model "WDSR-A" \
+	                --expansion-ratio 4
+}
+
+test_b()
+{
+	CHECKPOINT_FILE=output/WDSR-B-f32-b16-r6-x2-best.pth.tar
+	python eval.py --dataset-dir ${DIV2K_DIR} \
+	                --checkpoint-file ${CHECKPOINT_FILE} \
+	                --model "WDSR-B" \
+	                --expansion-ratio 6
+}
+
+test_b
