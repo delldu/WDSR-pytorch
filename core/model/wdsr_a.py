@@ -48,4 +48,3 @@ class WDSR_A(nn.Module):
             x = self.shift_mean(x, mode='add')
 
         return x
-

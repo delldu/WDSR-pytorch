@@ -6,9 +6,12 @@ from torch.utils.data.dataloader import DataLoader
 
 from core.option import parser
 from core.model import WDSR_A, WDSR_B
-from core.data.div2k import DIV2K
+# from core.data.div2k import DIV2K
+from core.data.sdr import SRDataset
+
 from core.data.utils import quantize
 from core.utils import AverageMeter, calc_psnr, load_checkpoint, load_weights
+import torchvision.transforms
 
 import pdb
 
@@ -41,11 +44,13 @@ def test(dataset, loader, model, device, args, tag=''):
 
     # Set the model to evaluation mode
     model.eval()
-
+    count = 0
     with tqdm(total=len(dataset)) as t:
         t.set_description(tag)
 
         for data in loader:
+            count = count + 1
+
             lr, hr = data
             # pdb.set_trace()
 
@@ -63,6 +68,7 @@ def test(dataset, loader, model, device, args, tag=''):
             # (Pdb) sr.size()
             # torch.Size([1, 3, 1356, 2040])
 
+
             # Quantize results
             sr = quantize(sr, args.rgb_range)
 
@@ -71,7 +77,15 @@ def test(dataset, loader, model, device, args, tag=''):
 
             t.update(lr.shape[0])
 
-    print('DIV2K (val) PSNR: {:.4f} dB'.format(psnr.avg))
+            # if count > 100:
+            #     srimg = torchvision.transforms.ToPILImage()(sr.squeeze().div(255).cpu())
+            #     srimg.save("result/{:03d}.png".format(count - 100))
+
+            #     #     srimg.show()
+            #     #     pdb.set_trace()
+
+
+    print('SDR (val) PSNR: {:.4f} dB'.format(psnr.avg))
 
 
 if __name__ == '__main__':
@@ -95,7 +109,9 @@ if __name__ == '__main__':
     model = load_weights(model, load_checkpoint(args.checkpoint_file)['state_dict'])
 
     # Prepare dataset
-    dataset = DIV2K(args, train=False)
+    dataset = SRDataset("test")
     dataloader = DataLoader(dataset=dataset, batch_size=1)
+
+    # pdb.set_trace()
 
     test(dataset, dataloader, model, device, args)

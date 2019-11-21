@@ -4,13 +4,15 @@ from tqdm import tqdm
 from .utils import load_img, img2np, get_patch, np2tensor, normalize
 import pdb
 
+TRAIN_NUM_FILES, VALID_NUM_FILES = 800, 200
+
 class DIV2K(object):
     def __init__(self, args, train, n_pairs=None):
         self.args = args
         self.train = train
 
         if not n_pairs:
-            self.n_pairs = 800 if self.train else 100
+            self.n_pairs = TRAIN_NUM_FILES if self.train else VALID_NUM_FILES
         else:
             self.n_pairs = n_pairs
 
@@ -61,7 +63,7 @@ class DIV2K(object):
 
     def _is_ready(self):
         try:
-            for phase, num_images in [('train', 800), ('valid', 100)] if self.train else [('valid', 100)]:
+            for phase, num_images in [('train', TRAIN_NUM_FILES), ('valid', VALID_NUM_FILES)] if self.train else [('valid', VALID_NUM_FILES)]:
                 with h5py.File('{}/DIV2K_{}_x{}.h5'.format(self.args.dataset_dir, phase, self.args.scale), 'r') as h5:
                     assert len(h5['hr']) == num_images and len(h5['lr']) == num_images
         except Exception:
@@ -84,7 +86,8 @@ class DIV2K(object):
                 lr, hr = get_patch(h5['lr'][idx], h5['hr'][idx], self.args.patch_size, self.args.scale,
                                    self.args.augment_patch)
             else:
-                lr, hr = h5['lr'][idx].value, h5['hr'][idx].value
+                # lr, hr = h5['lr'][idx].value, h5['hr'][idx].value
+                lr, hr = h5['lr'][idx][:], h5['hr'][idx][:]
 
             lr = np2tensor(lr)
             hr = np2tensor(hr)

@@ -12,9 +12,11 @@ from torch.utils.tensorboard import SummaryWriter
 
 from core.option import parser
 from core.model import WDSR_A, WDSR_B
-from core.data.div2k import DIV2K
+# from core.data.div2k import DIV2K
+from core.data.sdr import SRDataset
+
 from core.data.utils import quantize
-from core.utils import AverageMeter, adjust_lr, calc_psnr, save_checkpoint
+from core.utils import AverageMeter, adjust_lr, calc_psnr, save_checkpoint, load_checkpoint, load_weights
 
 import pdb
 
@@ -110,6 +112,8 @@ if __name__ == '__main__':
     # Define specific options and parse arguments
     parser.add_argument('--dataset-dir', type=str, required=True, help='DIV2K Dataset Root Directory')
     parser.add_argument('--output-dir', type=str, required=True)
+    parser.add_argument('--checkpoint-file', type=str, required=True)
+
     args = parser.parse_args()
 
     # Set cuDNN auto-tuner and get device for learning
@@ -131,14 +135,20 @@ if __name__ == '__main__':
         model = WDSR_A(args).to(device)
 
     print_information(model, args)
+    model = load_weights(model, load_checkpoint(args.checkpoint_file)['state_dict'])
 
     # Define loss function and optimizer
     criterion = nn.L1Loss()
     optimizer = optim.Adam(filter(lambda x: x.requires_grad, model.parameters()), lr=args.lr)
 
     # Prepare dataset
-    train_dataset = DIV2K(args, train=True)
-    valid_dataset = DIV2K(args, train=False)
+    # train_dataset = DIV2K(args, train=True)
+    # valid_dataset = DIV2K(args, train=False)
+
+    train_dataset = SRDataset("train")
+    valid_dataset = SRDataset("valid")
+
+
     train_dataloader = DataLoader(dataset=train_dataset, batch_size=args.batch_size,
                                   shuffle=True, num_workers=args.num_workers, pin_memory=True)
     valid_dataloader = DataLoader(dataset=valid_dataset, batch_size=1)
@@ -171,7 +181,7 @@ if __name__ == '__main__':
 
         valid_loss, valid_psnr = test(valid_dataset, valid_dataloader, model, criterion, args, tag='valid')
 
-        is_best = valid_psnr > best_psnr
+        is_best = valid_psnr > best_psnr and epoch > 0
 
         if valid_psnr > best_psnr:
             best_epoch = epoch
@@ -185,7 +195,6 @@ if __name__ == '__main__':
         ######################
         # Save checkpoint
         ######################
-
         save_checkpoint({
             'epoch': epoch,
             'train_loss': train_loss,

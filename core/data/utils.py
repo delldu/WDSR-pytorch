@@ -2,8 +2,6 @@ import random
 import PIL.Image as pil_image
 import numpy as np
 import torch
-import pdb
-
 
 def load_img(path):
     return pil_image.open(path).convert('RGB')
@@ -16,9 +14,9 @@ def img2np(x):
 def np2tensor(x):
     return torch.from_numpy(x).permute(2, 0, 1).float()
 
-
-def tensor2img(x):
-    return pil_image.fromarray(x.byte().cpu().numpy())
+# xxxx3333
+# def tensor2img(x):
+#     return pil_image.fromarray(x.byte().cpu().numpy())
 
 
 def quantize(x, quantize_range):
@@ -56,3 +54,18 @@ def get_patch(lr, hr, patch_size, scale, augment_patch=False):
     if augment_patch:
         lr, hr = augment_patches([lr, hr])
     return lr, hr
+
+
+# if __name__ == '__main__':
+#     import pdb
+
+#     img = pil_image.open("/tmp/a.png")
+
+    # pdb.set_trace()
+    # a1 = img2np(img)
+    # (Pdb) a1.dtype, a1.shape,a1.max(), a1.min()
+    # (dtype('uint8'), (540, 960, 3), 203, 0)
+
+    # (Pdb) t1 = np2tensor(a1)
+    # (Pdb) t1.dtype, t1.size(), t1.max(), t1.min()
+    # (torch.float32, torch.Size([3, 540, 960]), tensor(203.), tensor(0.))

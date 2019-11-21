@@ -2,6 +2,8 @@ from torch import nn
 from torch.nn.utils import weight_norm
 from .common import ShiftMean
 
+import pdb
+
 
 class ResBlock(nn.Module):
     def __init__(self, n_feats, expansion_ratio, res_scale=1.0, low_rank_ratio=0.8):
@@ -43,8 +45,16 @@ class WDSR_B(nn.Module):
 
         self.subtract_mean = args.subtract_mean
         self.shift_mean = ShiftMean(args.rgb_mean)
+        # pdb.set_trace()
+        # (Pdb) pp args.rgb_mean
+        # [0.4488, 0.4371, 0.404]
+        # (Pdb) self.shift_mean.rgb_mean.size()
+        # torch.Size([1, 3, 1, 1])
 
     def forward(self, x):
+        # (Pdb) pp self.subtract_mean
+        # True
+
         if self.subtract_mean:
             x = self.shift_mean(x, mode='sub')
 
